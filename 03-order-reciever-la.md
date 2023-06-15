@@ -13,11 +13,11 @@ In the exercise we'll create the Logic App that is responsible for recieving the
 
     - Use the following sample payload to create the JSON schema:
 
-        	{
+            {
 	            "product": "Cherry Glue",
 	            "quantity": "10",
 	            "email": "jasoncoo@onemtc.net"
-	        }
+            }
     
     - The request method is POST
 
@@ -26,10 +26,28 @@ In the exercise we'll create the Logic App that is responsible for recieving the
     **Note:** when using a prev V3 action the "Partition Key Value" is required.
 
     Pre V3
+
     ![Pre V3 Create or Update Action](./media/ex3/la1_or_cd.png)
 
     V3
+
     ![V3 Create or Update Action](./media/ex3/la1_or_cdv3.png)
+
+    **Note:** Consider using RBAC for Cosmos authorization.
+
+            $resourceGroupName = "<myResourceGroup>"
+            $accountName = "<myCosmosAccount>"
+            
+            Get-AzCosmosDBSqlRoleDefinition -AccountName $accountName -ResourceGroupName $resourceGroupName
+            $roleDefinitionId ="<cosmosRewadWriteRole>"
+            $principalId = "<logicAppPrinicpalId>"            
+
+            New-AzCosmosDBSqlRoleAssignment -AccountName $accountName `
+                -ResourceGroupName $resourceGroupName `
+                -RoleDefinitionId $roleDefinitionId `
+                -Scope "/" `
+                -PrincipalId $principalId           
+
 
     - The Database/Collection IDs are FlavoredOfficeSupplies/PendingOrders
     - The document to be persisted should match the structure of the inbound rest JSON document and with values dynamically generated from the HTTP request triggered as pictured.
